@@ -6,6 +6,8 @@ defmodule Tunez.Music do
     resource Tunez.Music.Artist do
       define :create_artist, action: :create
       define :read_artists, action: :read
+      define :get_artist_by_id, action: :read, get_by: :id
+      define :update_artist, action: :update
     end
   end
 end
