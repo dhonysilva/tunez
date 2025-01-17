@@ -89,6 +89,79 @@ defmodule TunezWeb.CoreComponents do
     """
   end
 
+  slot :inner_block
+
+  def h1(assigns) do
+    ~H"""
+    <h1 class="text-3xl font-semibold leading-8 py-2">
+      {render_slot(@inner_block)}
+    </h1>
+    """
+  end
+
+  slot :inner_block
+
+  def h2(assigns) do
+    ~H"""
+    <h2 class="text-xl font-semibold">
+      {render_slot(@inner_block)}
+    </h2>
+    """
+  end
+
+  attr :image, :string, default: nil
+
+  def cover_image(assigns) do
+    ~H"""
+    <%= if @image do %>
+      <img src={@image} class="block aspect-square rounded-md w-full" />
+    <% else %>
+      <div class="border border-base-content/25 place-content-center grid rounded-md aspect-square">
+        <.icon name="hero-photo" class="bg-base-content/25 w-8 h-8" />
+      </div>
+    <% end %>
+    """
+  end
+
+  attr :kind, :string,
+    values: ~w(base neutral primary secondary accent ghost error),
+    default: "base"
+
+  attr :outline, :boolean, default: false
+  attr :text, :boolean, default: false
+  attr :size, :string, values: ~w(lg sm xs md), default: "md"
+  attr :class, :string, default: ""
+  attr :rest, :global, include: ~w(navigate disabled patch)
+
+  slot :inner_block
+
+  def button_link(assigns) do
+    ~H"""
+    <.link
+      class={[
+        "btn",
+        @size == "lg" && "btn-lg",
+        @size == "sm" && "btn-sm",
+        @size == "xs" && "btn-xs",
+        @kind == "primary" && "btn-primary",
+        @kind == "secondary" && "btn-secondary",
+        @kind == "neutral" && "btn-neutral",
+        @kind == "accent" && "btn-accent",
+        @kind == "ghost" && "btn-ghost",
+        @kind == "error" && "btn-ghost text-error",
+        @kind == "error" && !(@outline || @text) && "bg-red-100 hover:bg-red-200",
+        @outline && "btn-outline",
+        @text && "btn-link",
+        @rest[:disabled] && "!bg-base-200",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.link>
+    """
+  end
+
   @doc """
   Renders flash notices.
 
@@ -421,23 +494,52 @@ defmodule TunezWeb.CoreComponents do
   Renders a header with title.
   """
   attr :class, :string, default: nil
+  attr :responsive, :boolean, default: true
 
   slot :inner_block, required: true
   slot :subtitle
-  slot :actions
+  slot :action
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
+    <header class={[
+      @action != [] && "flex items-center justify-between sm:gap-3 md:gap-6",
+      @class,
+      "my-6"
+    ]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
-          <%= render_slot(@inner_block) %>
-        </h1>
+        {render_slot(@inner_block)}
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-          <%= render_slot(@subtitle) %>
+          {render_slot(@subtitle)}
         </p>
       </div>
-      <div class="flex-none"><%= render_slot(@actions) %></div>
+      <div
+        :if={@action != []}
+        class={[
+          !@responsive && "flex-none space-x-4",
+          @responsive && "max-sm:dropdown max-sm:dropdown-end sm:flex-none sm:space-x-4"
+        ]}
+      >
+        <div
+          :if={@responsive}
+          tabindex="0"
+          role="button"
+          class="btn btn-sm btn-primary btn-outline sm:hidden"
+        >
+          <.icon name="hero-chevron-double-down w-4 h-4" />
+        </div>
+        <div
+          tabindex="0"
+          class={[
+            !@responsive && "space-x-4",
+            @responsive &&
+              "dropdown-content max-sm:flex max-sm:flex-col-reverse max-sm:z-[1] max-sm:menu
+                   max-sm:p-2 max-sm:shadow max-sm:bg-base-100 max-sm:rounded-box max-sm:w-52 sm:space-x-4"
+          ]}
+        >
+          {render_slot(@action)}
+        </div>
+      </div>
     </header>
     """
   end
