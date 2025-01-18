@@ -22,6 +22,15 @@ defmodule Tunez.Music.Album do
     prepare build(sort: [year_released: :desc])
   end
 
+  validations do
+    validate numericality(:year_released,
+               greater_than: 1950,
+               less_than_or_equal_to: &__MODULE__.next_year/0
+             ),
+             where: [present(:year_released)],
+             message: "must be between 1950 and next year"
+  end
+
   attributes do
     uuid_primary_key :id
 
@@ -44,4 +53,6 @@ defmodule Tunez.Music.Album do
       allow_nil? false
     end
   end
+
+  def next_year, do: Date.utc_today().year + 1
 end
