@@ -32,6 +32,7 @@ defmodule Tunez.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:ash_phoenix, "~> 2.0"},
       {:ash_sqlite, "~> 0.2"},
       {:ash, "~> 3.0"},
       {:igniter, "~> 0.3"},
