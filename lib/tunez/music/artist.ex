@@ -16,6 +16,15 @@ defmodule Tunez.Music.Artist do
 
       change Tunez.Music.Changes.UpdatePreviousNames, where: [changing(:name)]
     end
+
+    read :search do
+      argument :query, :ci_string do
+        constraints allow_empty?: true
+        default ""
+      end
+
+      filter expr(contains(name, ^arg(:query)))
+    end
   end
 
   attributes do
