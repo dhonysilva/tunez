@@ -10,7 +10,7 @@ defmodule Tunez.Repo.Migrations.CreateArtists do
   def up do
     create table(:artists, primary_key: false) do
       add :updated_at, :utc_datetime_usec, null: false
-      add :insertd_at, :utc_datetime_usec, null: false
+      add :inserted_at, :utc_datetime_usec, null: false
       add :biography, :text
       add :name, :text, null: false
       add :id, :uuid, null: false, primary_key: true
