@@ -1,7 +1,7 @@
 defmodule Tunez.Music.Album do
-  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshSqlite.DataLayer
+  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
 
-  sqlite do
+  postgres do
     table "albums"
     repo Tunez.Repo
   end
@@ -52,6 +52,14 @@ defmodule Tunez.Music.Album do
     belongs_to :artist, Tunez.Music.Artist do
       allow_nil? false
     end
+  end
+
+  calculations do
+    calculate :years_ago, :integer, expr(2025 - year_released)
+
+    calculate :string_years_ago,
+              :string,
+              expr("wow, this was released " <> years_ago <> " years ago!")
   end
 
   def next_year, do: Date.utc_today().year + 1

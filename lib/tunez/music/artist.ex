@@ -1,7 +1,7 @@
 defmodule Tunez.Music.Artist do
-  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshSqlite.DataLayer
+  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
 
-  sqlite do
+  postgres do
     table "artists"
     repo Tunez.Repo
   end
@@ -16,6 +16,18 @@ defmodule Tunez.Music.Artist do
 
       change Tunez.Music.Changes.UpdatePreviousNames, where: [changing(:name)]
     end
+
+    read :search do
+      argument :query, :ci_string do
+        constraints allow_empty?: true
+        default ""
+      end
+
+      filter expr(contains(name, ^arg(:query)))
+      pagination offset?: true, default_limit: 12
+
+      prepare build(load: [:album_count, :latest_album_year_released, :cover_image_url])
+    end
   end
 
   attributes do
@@ -23,6 +35,7 @@ defmodule Tunez.Music.Artist do
 
     attribute :name, :string do
       allow_nil? false
+      public? true
     end
 
     attribute :biography, :string
@@ -31,11 +44,23 @@ defmodule Tunez.Music.Artist do
       default []
     end
 
-    create_timestamp :insertd_at
-    create_timestamp :updated_at
+    create_timestamp :inserted_at, public?: true
+    create_timestamp :updated_at, public?: true
   end
 
   relationships do
     has_many :albums, Tunez.Music.Album
+  end
+
+  aggregates do
+    count :album_count, :albums do
+      public? true
+    end
+
+    first :latest_album_year_released, :albums, :year_released do
+      public? true
+    end
+
+    first :cover_image_url, :albums, :cover_image_url
   end
 end
