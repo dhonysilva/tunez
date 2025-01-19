@@ -1,6 +1,3 @@
-==> mime
-Compiling 1 file (.ex)
-Generated mime app
 defmodule Tunez.MixProject do
   use Mix.Project
 
