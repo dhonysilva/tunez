@@ -1,4 +1,4 @@
 defmodule Tunez.Repo do
-  use AshSqlite.Repo,
+  use AshPostgres.Repo,
     otp_app: :tunez
 end
