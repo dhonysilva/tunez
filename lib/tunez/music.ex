@@ -8,9 +8,9 @@ defmodule Tunez.Music do
     end
 
     mutations do
-      create Tunez.Music.Artist, :create_artist
-      update Tunez.Music.Artist, :update_artist
-      delete Tunez.Music.Artist, :destroy_artist
+      create Tunez.Music.Artist, :create_artist, :create
+      update Tunez.Music.Artist, :update_artist, :update
+      delete Tunez.Music.Artist, :destroy_artist, :destroy
     end
   end
 
