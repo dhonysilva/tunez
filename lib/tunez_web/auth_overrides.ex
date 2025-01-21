@@ -17,4 +17,17 @@ defmodule TunezWeb.AuthOverrides do
   # override AshAuthentication.Phoenix.Components.SignIn do
   #  set :show_banner false
   # end
+
+  alias AshAuthentication.Phoenix.Components
+
+  override Components.Banner do
+    set :image_url, nil
+    set :dark_image_url, nil
+    set :text_class, "text-8xl text-accent"
+    set :text, "♫"
+  end
+
+  override AshAuthentication.Phoenix.Overrides do
+    set :submit_class, "phx-submit-loading:opacity-75 btn btn-primary"
+  end
 end
