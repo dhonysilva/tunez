@@ -1,9 +1,34 @@
 defmodule Tunez.Music.Artist do
-  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
+  use Ash.Resource,
+    otp_app: :tunez,
+    domain: Tunez.Music,
+    data_layer: AshPostgres.DataLayer,
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
 
   postgres do
     table "artists"
     repo Tunez.Repo
+  end
+
+  graphql do
+    type :artist
+
+    filterable_fields [
+      :album_count,
+      :cover_image_url,
+      :inserted_at,
+      :latest_album_year_released,
+      :updated_at
+    ]
+  end
+
+  json_api do
+    type "artist"
+    includes [:albums]
+  end
+
+  resource do
+    description "A person or group of pelople that makes and release music"
   end
 
   actions do
@@ -18,7 +43,10 @@ defmodule Tunez.Music.Artist do
     end
 
     read :search do
+      description "List Artists, optionally fitlering by name"
+
       argument :query, :ci_string do
+        description "Return only artists with names including the given value."
         constraints allow_empty?: true
         default ""
       end
@@ -38,10 +66,13 @@ defmodule Tunez.Music.Artist do
       public? true
     end
 
-    attribute :biography, :string
+    attribute :biography, :string do
+      public? true
+    end
 
     attribute :previous_names, {:array, :string} do
       default []
+      public? true
     end
 
     create_timestamp :inserted_at, public?: true
@@ -49,7 +80,9 @@ defmodule Tunez.Music.Artist do
   end
 
   relationships do
-    has_many :albums, Tunez.Music.Album
+    has_many :albums, Tunez.Music.Album do
+      public? true
+    end
   end
 
   aggregates do

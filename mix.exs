@@ -32,9 +32,11 @@ defmodule Tunez.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:ash_graphql, "~> 1.0"},
+      {:open_api_spex, "~> 3.0"},
+      {:ash_json_api, "~> 1.0"},
       {:ash_postgres, "~> 2.0"},
       {:ash_phoenix, "~> 2.0"},
-      {:ash_sqlite, "~> 0.2"},
       {:ash, "~> 3.0"},
       {:igniter, "~> 0.3"},
       {:phoenix, "~> 1.7.11"},
