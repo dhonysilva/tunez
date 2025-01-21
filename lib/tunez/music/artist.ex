@@ -12,11 +12,23 @@ defmodule Tunez.Music.Artist do
 
   graphql do
     type :artist
+
+    filterable_fields [
+      :album_count,
+      :cover_image_url,
+      :inserted_at,
+      :latest_album_year_released,
+      :updated_at
+    ]
   end
 
   json_api do
     type "artist"
     includes [:albums]
+  end
+
+  resource do
+    description "A person or group of pelople that makes and release music"
   end
 
   actions do
@@ -31,7 +43,10 @@ defmodule Tunez.Music.Artist do
     end
 
     read :search do
+      description "List Artists, optionally fitlering by name"
+
       argument :query, :ci_string do
+        description "Return only artists with names including the given value."
         constraints allow_empty?: true
         default ""
       end

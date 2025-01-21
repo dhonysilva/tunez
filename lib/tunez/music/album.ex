@@ -3,11 +3,15 @@ defmodule Tunez.Music.Album do
     otp_app: :tunez,
     domain: Tunez.Music,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshJsonApi.Resource]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
 
   postgres do
     table "albums"
     repo Tunez.Repo
+  end
+
+  graphql do
+    type :album
   end
 
   json_api do
@@ -60,13 +64,13 @@ defmodule Tunez.Music.Album do
     create_timestamp :updated_at
   end
 
+  def next_year, do: Date.utc_today().year + 1
+
   relationships do
     belongs_to :artist, Tunez.Music.Artist do
       allow_nil? false
     end
   end
-
-  def next_year, do: Date.utc_today().year + 1
 
   calculations do
     calculate :years_ago, :integer, expr(2025 - year_released)
