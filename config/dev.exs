@@ -65,7 +65,7 @@ config :tunez, TunezWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :tunez, dev_routes: true
+config :tunez, dev_routes: true, token_signing_secret: "EV93g3/Yf2r3uNjJrrr3ycyucE873hS8"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
@@ -82,3 +82,5 @@ config :phoenix_live_view, :debug_heex_annotations, true
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :ash_authentication, debug_authentication_failures?: true
